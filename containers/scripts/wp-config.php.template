@@ -1,0 +1,56 @@
+<?php
+/**
+ * WordPress configuration template
+ * This file will be processed by envsubst to replace environment variables
+ */
+
+// Database configuration
+define('DB_NAME', '${DB_NAME}');
+define('DB_USER', '${DB_USER}');
+define('DB_PASSWORD', '${DB_PASSWORD}');
+define('DB_HOST', '${DB_HOST}');
+define('DB_CHARSET', 'utf8mb4');
+define('DB_COLLATE', '');
+
+// Authentication unique keys and salts
+define('AUTH_KEY',         '${WP_AUTH_KEY}');
+define('SECURE_AUTH_KEY',  '${WP_SECURE_AUTH_KEY}');
+define('LOGGED_IN_KEY',    '${WP_LOGGED_IN_KEY}');
+define('NONCE_KEY',        '${WP_NONCE_KEY}');
+define('AUTH_SALT',        '${WP_AUTH_SALT}');
+define('SECURE_AUTH_SALT', '${WP_SECURE_AUTH_SALT}');
+define('LOGGED_IN_SALT',   '${WP_LOGGED_IN_SALT}');
+define('NONCE_SALT',       '${WP_NONCE_SALT}');
+
+// WordPress settings
+define('WP_DEBUG', ${WP_DEBUG});
+define('WP_DEBUG_LOG', ${WP_DEBUG_LOG});
+define('WP_DEBUG_DISPLAY', ${WP_DEBUG_DISPLAY});
+define('WP_CACHE', ${WP_CACHE});
+
+// Redis configuration
+define('WP_REDIS_HOST', '${REDIS_HOST}');
+define('WP_REDIS_PORT', ${REDIS_PORT});
+define('WP_REDIS_PASSWORD', '${REDIS_PASSWORD}');
+define('WP_REDIS_DATABASE', ${REDIS_DATABASE});
+
+// Security settings
+define('DISALLOW_FILE_EDIT', true);
+define('DISALLOW_FILE_MODS', true);
+define('AUTOMATIC_UPDATER_DISABLED', true);
+define('WP_AUTO_UPDATE_CORE', false);
+
+// Performance settings
+define('WP_MEMORY_LIMIT', '256M');
+define('WP_MAX_MEMORY_LIMIT', '512M');
+
+// Multisite (disabled by default)
+// define('WP_ALLOW_MULTISITE', true);
+
+// Absolute path to the WordPress directory
+if (!defined('ABSPATH')) {
+    define('ABSPATH', __DIR__ . '/');
+}
+
+// Sets up WordPress vars and included files
+require_once ABSPATH . 'wp-settings.php'; 
