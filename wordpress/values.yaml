@@ -10,7 +10,7 @@ global:
 wordpress:
   # WordPress image configuration
   image:
-    repository: ghcr.io/your-username/wordpress
+    repository: ghcr.io/displacetech/wordpress
     tag: "latest"
     pullPolicy: Always
   

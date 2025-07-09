@@ -3,7 +3,7 @@
 
 # Variables
 DOCKER_REGISTRY ?= ghcr.io
-DOCKER_USERNAME ?= your-username
+DOCKER_USERNAME ?= displacetech
 IMAGE_NAME ?= wordpress
 WORDPRESS_VERSION ?= 6.8.1
 PHP_VERSION ?= 8.4.10

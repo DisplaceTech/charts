@@ -6,7 +6,7 @@ wordpress:
   replicaCount: 1
   
   image:
-    repository: ghcr.io/your-username/wordpress
+    repository: ghcr.io/displacetech/wordpress
     tag: "latest"  # Use latest tag for development
     pullPolicy: Always
   

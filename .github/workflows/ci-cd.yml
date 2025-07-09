@@ -47,11 +47,14 @@ jobs:
 
       - name: Build and test Docker image
         run: |
+          # Convert repository owner to lowercase
+          REPO_OWNER_LOWER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          
           # Build image
-          docker build -t ${{ env.DOCKER_REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ env.WORDPRESS_VERSION }}-${{ env.PHP_VERSION }} containers/
+          docker build -t ${{ env.DOCKER_REGISTRY }}/$REPO_OWNER_LOWER/${{ env.IMAGE_NAME }}:${{ env.WORDPRESS_VERSION }}-${{ env.PHP_VERSION }} containers/
           
           # Test image
-          docker run --rm -d -p 8080:80 --name wordpress-test ${{ env.DOCKER_REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ env.WORDPRESS_VERSION }}-${{ env.PHP_VERSION }}
+          docker run --rm -d -p 8080:80 --name wordpress-test ${{ env.DOCKER_REGISTRY }}/$REPO_OWNER_LOWER/${{ env.IMAGE_NAME }}:${{ env.WORDPRESS_VERSION }}-${{ env.PHP_VERSION }}
           sleep 30
           curl -f http://localhost:8080 || exit 1
           docker stop wordpress-test
@@ -92,15 +95,18 @@ jobs:
 
       - name: Build and push Docker image
         run: |
+          # Convert repository owner to lowercase
+          REPO_OWNER_LOWER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          
           # Build with version tag
-          docker build -t ${{ env.DOCKER_REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ env.WORDPRESS_VERSION }}-${{ env.PHP_VERSION }} containers/
+          docker build -t ${{ env.DOCKER_REGISTRY }}/$REPO_OWNER_LOWER/${{ env.IMAGE_NAME }}:${{ env.WORDPRESS_VERSION }}-${{ env.PHP_VERSION }} containers/
           
           # Tag as latest
-          docker tag ${{ env.DOCKER_REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ env.WORDPRESS_VERSION }}-${{ env.PHP_VERSION }} ${{ env.DOCKER_REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest
+          docker tag ${{ env.DOCKER_REGISTRY }}/$REPO_OWNER_LOWER/${{ env.IMAGE_NAME }}:${{ env.WORDPRESS_VERSION }}-${{ env.PHP_VERSION }} ${{ env.DOCKER_REGISTRY }}/$REPO_OWNER_LOWER/${{ env.IMAGE_NAME }}:latest
           
           # Push images
-          docker push ${{ env.DOCKER_REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ env.WORDPRESS_VERSION }}-${{ env.PHP_VERSION }}
-          docker push ${{ env.DOCKER_REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest
+          docker push ${{ env.DOCKER_REGISTRY }}/$REPO_OWNER_LOWER/${{ env.IMAGE_NAME }}:${{ env.WORDPRESS_VERSION }}-${{ env.PHP_VERSION }}
+          docker push ${{ env.DOCKER_REGISTRY }}/$REPO_OWNER_LOWER/${{ env.IMAGE_NAME }}:latest
 
       - name: Package Helm chart
         run: |
@@ -148,6 +154,9 @@ jobs:
 
       - name: Deploy to staging
         run: |
+          # Convert repository owner to lowercase
+          REPO_OWNER_LOWER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          
           # Create namespace
           kubectl create namespace ${{ env.HELM_NAMESPACE }}-staging --dry-run=client -o yaml | kubectl apply -f -
           
@@ -157,7 +166,7 @@ jobs:
             --create-namespace \
             --wait \
             --timeout 10m \
-            --set wordpress.image.repository=${{ env.DOCKER_REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }} \
+            --set wordpress.image.repository=${{ env.DOCKER_REGISTRY }}/$REPO_OWNER_LOWER/${{ env.IMAGE_NAME }} \
             --set wordpress.image.tag=latest
 
       - name: Verify deployment
@@ -192,6 +201,9 @@ jobs:
 
       - name: Deploy to production
         run: |
+          # Convert repository owner to lowercase
+          REPO_OWNER_LOWER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          
           # Create namespace
           kubectl create namespace ${{ env.HELM_NAMESPACE }} --dry-run=client -o yaml | kubectl apply -f -
           
@@ -201,7 +213,7 @@ jobs:
             --create-namespace \
             --wait \
             --timeout 10m \
-            --set wordpress.image.repository=${{ env.DOCKER_REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }} \
+            --set wordpress.image.repository=${{ env.DOCKER_REGISTRY }}/$REPO_OWNER_LOWER/${{ env.IMAGE_NAME }} \
             --set wordpress.image.tag=${{ env.WORDPRESS_VERSION }}-${{ env.PHP_VERSION }}
 
       - name: Verify deployment
@@ -218,12 +230,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Install Trivy
+        run: |
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.48.0
+
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: ${{ env.DOCKER_REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ env.WORDPRESS_VERSION }}-${{ env.PHP_VERSION }}
-          format: 'sarif'
-          output: 'trivy-results.sarif'
+        run: |
+          # Convert repository owner to lowercase
+          REPO_OWNER_LOWER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          
+          # Run Trivy scan
+          trivy image --format sarif --output trivy-results.sarif ${{ env.DOCKER_REGISTRY }}/$REPO_OWNER_LOWER/${{ env.IMAGE_NAME }}:${{ env.WORDPRESS_VERSION }}-${{ env.PHP_VERSION }}
 
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3
