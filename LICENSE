@@ -1,0 +1,46 @@
+                    GNU GENERAL PUBLIC LICENSE
+                       Version 3, 29 June 2007
+
+ Copyright (C) 2025 Displace Technologies LLC
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+                     Additional Permissions
+
+This WordPress Helm Charts project includes components that are licensed under
+different terms:
+
+1. WordPress Core: GPL v2 or later
+   Copyright (C) 2003-2025 by the WordPress contributors
+   https://wordpress.org/about/gpl/
+
+2. Powder Theme: GPL v3
+   Copyright (C) 2006-2025 Brian Gardner
+   https://github.com/bgardner/powder
+
+3. Simple SEO Plugin: GPL v3
+   Copyright (C) 2025 Brian Gardner
+   https://github.com/bgardner/simple-seo
+
+4. Redis Object Cache Plugin: GPL v2 or later
+   Copyright (C) 2015-2025 Till Krüss
+   https://wordpress.org/plugins/redis-cache/
+
+5. Batcache Plugin: GPL v2 or later
+   Copyright (C) 2007-2025 Automattic
+   https://wordpress.org/plugins/batcache/
+
+The Docker images and Helm charts created by Displace Technologies LLC are
+licensed under GPL v3 or later, while respecting the original licenses of
+the included WordPress components. 

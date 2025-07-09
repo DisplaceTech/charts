@@ -1,0 +1,24 @@
+apiVersion: v2
+name: wordpress
+description: A Helm chart for WordPress with Redis caching, automated backups, and immutable filesystem
+type: application
+version: 0.1.0
+appVersion: "6.8.1"
+keywords:
+  - wordpress
+  - cms
+  - blog
+  - php
+  - mysql
+  - redis
+home: https://wordpress.org/
+sources:
+  - https://github.com/WordPress/WordPress
+  - https://github.com/bgardner/powder
+  - https://github.com/bgardner/simple-seo
+maintainers:
+  - name: Eric Mann
+    email: emann@displacetech.com
+annotations:
+  category: CMS
+  licenses: GPL-3.0

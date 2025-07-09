@@ -1,0 +1,36 @@
+{{- if .Values.wordpress.persistence.uploads.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "wordpress.fullname" . }}-uploads
+  labels:
+    {{- include "wordpress.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - {{ .Values.wordpress.persistence.uploads.accessMode }}
+  {{- if .Values.wordpress.persistence.uploads.storageClass }}
+  storageClassName: {{ .Values.wordpress.persistence.uploads.storageClass }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.wordpress.persistence.uploads.size }}
+{{- end }}
+
+{{- if .Values.mysql.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "wordpress.fullname" . }}-mysql
+  labels:
+    {{- include "wordpress.labels" . | nindent 4 }}
+    app.kubernetes.io/component: mysql
+spec:
+  accessModes:
+    - {{ .Values.mysql.persistence.accessMode }}
+  {{- if .Values.mysql.persistence.storageClass }}
+  storageClassName: {{ .Values.mysql.persistence.storageClass }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.mysql.persistence.size }}
+{{- end }} 

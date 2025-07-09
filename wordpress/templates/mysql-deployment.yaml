@@ -1,0 +1,91 @@
+{{- if .Values.mysql.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "wordpress.fullname" . }}-mysql
+  labels:
+    {{- include "wordpress.labels" . | nindent 4 }}
+    app.kubernetes.io/component: mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "wordpress.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: mysql
+  template:
+    metadata:
+      labels:
+        {{- include "wordpress.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: mysql
+    spec:
+      securityContext:
+        {{- toYaml .Values.mysql.securityContext | nindent 8 }}
+      containers:
+      - name: mysql
+        image: "{{ .Values.mysql.image.repository }}:{{ .Values.mysql.image.tag }}"
+        imagePullPolicy: {{ .Values.mysql.image.pullPolicy }}
+        ports:
+        - name: mysql
+          containerPort: 3306
+          protocol: TCP
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.secrets.mysql.name }}
+              key: mysql-root-password
+        - name: MYSQL_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.secrets.mysql.name }}
+              key: mysql-database
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.secrets.mysql.name }}
+              key: mysql-user
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.secrets.mysql.name }}
+              key: mysql-password
+        {{- range $key, $value := .Values.mysql.env }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
+        {{- if .Values.mysql.livenessProbe }}
+        livenessProbe:
+          {{- toYaml .Values.mysql.livenessProbe | nindent 10 }}
+        {{- end }}
+        {{- if .Values.mysql.readinessProbe }}
+        readinessProbe:
+          {{- toYaml .Values.mysql.readinessProbe | nindent 10 }}
+        {{- end }}
+        resources:
+          {{- toYaml .Values.mysql.resources | nindent 10 }}
+        volumeMounts:
+        - name: mysql-data
+          mountPath: {{ .Values.mysql.persistence.mountPath }}
+        {{- if .Values.mysql.extraVolumeMounts }}
+        {{- toYaml .Values.mysql.extraVolumeMounts | nindent 8 }}
+        {{- end }}
+      volumes:
+      - name: mysql-data
+        persistentVolumeClaim:
+          claimName: {{ include "wordpress.fullname" . }}-mysql
+      {{- if .Values.mysql.extraVolumes }}
+      {{- toYaml .Values.mysql.extraVolumes | nindent 6 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }} 

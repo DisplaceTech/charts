@@ -1,0 +1,190 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "wordpress.fullname" . }}
+  labels:
+    {{- include "wordpress.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.wordpress.autoscaling.enabled }}
+  replicas: {{ .Values.wordpress.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "wordpress.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "wordpress.selectorLabels" . | nindent 8 }}
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "wordpress.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.wordpress.securityContext | nindent 8 }}
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.wordpress.image.repository }}:{{ .Values.wordpress.image.tag }}"
+        imagePullPolicy: {{ .Values.wordpress.image.pullPolicy }}
+        ports:
+        - name: http
+          containerPort: 80
+          protocol: TCP
+        env:
+        - name: DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.secrets.wordpress.name }}
+              key: db-name
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.secrets.wordpress.name }}
+              key: db-user
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.secrets.wordpress.name }}
+              key: db-password
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.secrets.wordpress.name }}
+              key: db-host
+        - name: WP_AUTH_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.secrets.wordpress.name }}
+              key: wp-auth-key
+        - name: WP_SECURE_AUTH_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.secrets.wordpress.name }}
+              key: wp-secure-auth-key
+        - name: WP_LOGGED_IN_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.secrets.wordpress.name }}
+              key: wp-logged-in-key
+        - name: WP_NONCE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.secrets.wordpress.name }}
+              key: wp-nonce-key
+        - name: WP_AUTH_SALT
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.secrets.wordpress.name }}
+              key: wp-auth-salt
+        - name: WP_SECURE_AUTH_SALT
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.secrets.wordpress.name }}
+              key: wp-secure-auth-salt
+        - name: WP_LOGGED_IN_SALT
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.secrets.wordpress.name }}
+              key: wp-logged-in-salt
+        - name: WP_NONCE_SALT
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.secrets.wordpress.name }}
+              key: wp-nonce-salt
+        - name: WP_ADMIN_EMAIL
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.secrets.wordpress.name }}
+              key: wp-admin-email
+        - name: WP_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.secrets.wordpress.name }}
+              key: wp-admin-password
+        {{- range $key, $value := .Values.wordpress.env }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
+        {{- if .Values.wordpress.envFrom }}
+        envFrom:
+          {{- toYaml .Values.wordpress.envFrom | nindent 10 }}
+        {{- end }}
+        {{- if .Values.wordpress.livenessProbe }}
+        livenessProbe:
+          {{- toYaml .Values.wordpress.livenessProbe | nindent 10 }}
+        {{- end }}
+        {{- if .Values.wordpress.readinessProbe }}
+        readinessProbe:
+          {{- toYaml .Values.wordpress.readinessProbe | nindent 10 }}
+        {{- end }}
+        {{- if .Values.wordpress.startupProbe }}
+        startupProbe:
+          {{- toYaml .Values.wordpress.startupProbe | nindent 10 }}
+        {{- end }}
+        resources:
+          {{- toYaml .Values.wordpress.resources | nindent 10 }}
+        volumeMounts:
+        - name: uploads
+          mountPath: /var/www/html/wp-content/uploads
+        - name: cache
+          mountPath: /var/www/html/wp-content/cache
+        {{- if .Values.wordpress.extraVolumeMounts }}
+        {{- toYaml .Values.wordpress.extraVolumeMounts | nindent 8 }}
+        {{- end }}
+      {{- if .Values.redis.enabled }}
+      - name: redis
+        image: "{{ .Values.redis.image.repository }}:{{ .Values.redis.image.tag }}"
+        imagePullPolicy: {{ .Values.redis.image.pullPolicy }}
+        ports:
+        - name: redis
+          containerPort: 6379
+          protocol: TCP
+        {{- if .Values.redis.livenessProbe }}
+        livenessProbe:
+          {{- toYaml .Values.redis.livenessProbe | nindent 10 }}
+        {{- end }}
+        {{- if .Values.redis.readinessProbe }}
+        readinessProbe:
+          {{- toYaml .Values.redis.readinessProbe | nindent 10 }}
+        {{- end }}
+        resources:
+          {{- toYaml .Values.redis.resources | nindent 10 }}
+        command:
+        - redis-server
+        - --maxmemory {{ .Values.redis.config.maxmemory }}
+        - --maxmemory-policy {{ .Values.redis.config.maxmemory-policy }}
+        {{- range $save := splitList " " .Values.redis.config.save }}
+        - --save {{ $save }}
+        {{- end }}
+        {{- if .Values.redis.config.password }}
+        - --requirepass {{ .Values.redis.config.password }}
+        {{- end }}
+        securityContext:
+          {{- toYaml .Values.redis.securityContext | nindent 10 }}
+      {{- end }}
+      volumes:
+      - name: uploads
+        persistentVolumeClaim:
+          claimName: {{ include "wordpress.fullname" . }}-uploads
+      - name: cache
+        emptyDir: {}
+      {{- if .Values.wordpress.extraVolumes }}
+      {{- toYaml .Values.wordpress.extraVolumes | nindent 6 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }} 

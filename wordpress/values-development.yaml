@@ -1,0 +1,159 @@
+# Development values for WordPress Helm chart
+# Use this file for development and testing deployments
+
+# WordPress configuration
+wordpress:
+  replicaCount: 1
+  
+  image:
+    repository: ghcr.io/your-username/wordpress
+    tag: "latest"  # Use latest tag for development
+    pullPolicy: Always
+  
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 80
+  
+  ingress:
+    enabled: false  # Disable ingress for development
+  
+  env:
+    WP_DEBUG: "true"
+    WP_DEBUG_LOG: "true"
+    WP_DEBUG_DISPLAY: "false"
+    WP_CACHE: "false"  # Disable cache for development
+    REDIS_HOST: "localhost"
+    REDIS_PORT: "6379"
+    REDIS_PASSWORD: ""
+    REDIS_DATABASE: "0"
+  
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "250m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+  
+  securityContext:
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+    readOnlyRootFilesystem: false  # Allow writes for development
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+  
+  persistence:
+    uploads:
+      enabled: true
+      size: 5Gi
+      storageClass: ""
+      accessMode: ReadWriteOnce
+      mountPath: /var/www/html/wp-content/uploads
+
+# MySQL configuration
+mysql:
+  enabled: true
+  
+  image:
+    repository: mysql
+    tag: "8.0"
+    pullPolicy: IfNotPresent
+  
+  service:
+    type: ClusterIP
+    port: 3306
+    targetPort: 3306
+  
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "250m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+  
+  persistence:
+    enabled: true
+    size: 10Gi
+    storageClass: ""
+    accessMode: ReadWriteOnce
+    mountPath: /var/lib/mysql
+
+# Redis configuration
+redis:
+  enabled: true
+  
+  image:
+    repository: redis
+    tag: "7-alpine"
+    pullPolicy: IfNotPresent
+  
+  service:
+    type: ClusterIP
+    port: 6379
+    targetPort: 6379
+  
+  resources:
+    requests:
+      memory: "64Mi"
+      cpu: "50m"
+    limits:
+      memory: "128Mi"
+      cpu: "100m"
+  
+  config:
+    maxmemory: "100mb"
+    maxmemory-policy: "allkeys-lru"
+    save: "900 1 300 10 60 10000"
+
+# Backup configuration
+backups:
+  enabled: false  # Disable backups for development
+  
+  uploads:
+    schedule: "0 2 * * 0"
+    retention: 7
+    resources:
+      requests:
+        memory: "128Mi"
+        cpu: "100m"
+      limits:
+        memory: "256Mi"
+        cpu: "200m"
+  
+  database:
+    schedule: "0 3 * * 0"
+    retention: 7
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "200m"
+      limits:
+        memory: "512Mi"
+        cpu: "400m"
+
+# Service account configuration
+serviceAccount:
+  create: true
+  name: "wordpress"
+  annotations: {}
+
+# Pod disruption budget
+podDisruptionBudget:
+  enabled: false
+
+# Horizontal pod autoscaler
+hpa:
+  enabled: false
+
+# Network policies
+networkPolicy:
+  enabled: false
+
+# Pod security standards
+podSecurityStandards:
+  enabled: false  # Disable for development 

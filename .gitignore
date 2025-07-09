@@ -1,0 +1,88 @@
+# Helm chart packages
+*.tgz
+
+# Kubernetes manifests
+*.yaml.bak
+*.yml.bak
+
+# Docker images
+*.tar
+*.tar.gz
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Backup files
+backup/
+backups/
+
+# Test files
+test-results/
+coverage/
+
+# Node modules (if any)
+node_modules/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+
+# Local development
+.local/
+local/
+
+# Secrets (never commit these!)
+secrets/
+*.key
+*.pem
+*.crt
+*.p12
+*.pfx
+
+# Terraform (if used)
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+
+# Ansible (if used)
+*.retry
+
+# Local kubeconfig
+kubeconfig
+kubeconfig.*
+
+# Chart dependencies
+charts/*/charts/
+charts/*/requirements.lock
+
+# Documentation build
+docs/_build/
+site/
+
+# CI/CD artifacts
+dist/
+build/ 
