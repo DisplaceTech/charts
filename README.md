@@ -4,7 +4,7 @@ This repository contains Helm charts for deploying WordPress on Kubernetes with 
 
 ## Features
 
-- **Custom WordPress Image**: Built on `php:8.4-apache-bookworm` with pre-installed themes and plugins
+- **Custom WordPress Image**: Built on `php:8.4.10-alpine` with pre-installed themes and plugins
 - **Redis Object Caching**: Sidecar Redis container for improved performance
 - **Batcache Full-Page Caching**: Server-side page caching for optimal performance
 - **Custom Theme & Plugins**: Powder theme and Simple SEO plugin pre-installed and activated

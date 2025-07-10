@@ -59,19 +59,12 @@ install_wordpress() {
         # Wait for database
         wait_for_database
         
-        # Install WordPress
-        wp core install \
-            --url="${WP_URL:-http://localhost}" \
-            --title="${WP_TITLE:-WordPress Site}" \
-            --admin_user="${WP_ADMIN_USER:-admin}" \
-            --admin_password="${WP_ADMIN_PASSWORD}" \
-            --admin_email="${WP_ADMIN_EMAIL}" \
-            --skip-email \
-            --allow-root
+        # Run WordPress installation script
+        php /var/www/html/install-wordpress.php
         
         # Mark as installed
         touch /var/www/html/.installed
-        echo "WordPress installed successfully"
+        echo "WordPress installation completed"
     fi
 }
 
@@ -88,4 +81,4 @@ if [ -n "$WP_ADMIN_PASSWORD" ] && [ -n "$WP_ADMIN_EMAIL" ]; then
 fi
 
 # Start Apache
-exec apache2-foreground 
+exec httpd -D FOREGROUND 
