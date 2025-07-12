@@ -172,6 +172,19 @@ backup-test: ## Test backup functionality
 	@echo "Backup jobs created. Check status with: kubectl get jobs -n $(HELM_NAMESPACE)"
 
 # Development targets
+local-serve: ## Start local development server with Docker Compose
+	@echo "Starting local development server..."
+	docker compose up --build -d
+	@echo "WordPress is available at http://localhost:8080"
+	@echo "Admin credentials: admin@example.com / admin123"
+
+local-stop: ## Stop local development server
+	@echo "Stopping local development server..."
+	docker compose down
+
+local-logs: ## View local development logs
+	docker compose logs -f
+
 lint: ## Lint the Helm chart
 	@echo "Linting Helm chart..."
 	helm lint $(HELM_CHART_PATH)

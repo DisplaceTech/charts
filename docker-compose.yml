@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  nginx:
+    build:
+      context: ./containers/nginx
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    volumes:
+      - wordpress_data:/var/www/html
+      - uploads_data:/var/www/html/wp-content/uploads
+    depends_on:
+      - php
+    networks:
+      - wordpress_network
+
+  php:
+    build:
+      context: ./containers
+      dockerfile: Dockerfile
+    volumes:
+      - wordpress_data:/var/www/html
+      - uploads_data:/var/www/html/wp-content/uploads
+      - ./containers/scripts/info.php:/var/www/html/info.php
+    environment:
+      # Database configuration
+      - DB_NAME=wordpress
+      - DB_USER=wordpress
+      - DB_PASSWORD=wordpress_password
+      - DB_HOST=mysql
+      - WP_TABLE_PREFIX=wp_
+      
+      # WordPress authentication keys and salts
+      - WP_AUTH_KEY=your-unique-phrase-here
+      - WP_SECURE_AUTH_KEY=your-unique-phrase-here
+      - WP_LOGGED_IN_KEY=your-unique-phrase-here
+      - WP_NONCE_KEY=your-unique-phrase-here
+      - WP_AUTH_SALT=your-unique-phrase-here
+      - WP_SECURE_AUTH_SALT=your-unique-phrase-here
+      - WP_LOGGED_IN_SALT=your-unique-phrase-here
+      - WP_NONCE_SALT=your-unique-phrase-here
+      
+      # WordPress settings
+      - WP_DEBUG=true
+      - WP_DEBUG_LOG=true
+      - WP_DEBUG_DISPLAY=false
+      - WP_CACHE=false
+      - WP_HOME=http://localhost:8080
+      - WP_SITEURL=http://localhost:8080
+      
+      # Site configuration
+      - WP_SITE_TITLE="SQLite WP Test"
+      - WP_ADMIN_USERNAME=ericmann
+      - WP_ADMIN_PASSWORD=testtest
+      - WP_ADMIN_EMAIL=test@eamann.com
+    networks:
+      - wordpress_network
+
+volumes:
+  wordpress_data:
+    driver: local
+  uploads_data:
+    driver: local
+
+networks:
+  wordpress_network:
+    driver: bridge

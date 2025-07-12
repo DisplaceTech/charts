@@ -35,12 +35,17 @@ wordpress:
             pathType: Prefix
     tls: []
   
+  # WordPress configuration
+  tablePrefix: "wp_"
+  debug: "false"
+  debugLog: "false"
+  debugDisplay: "false"
+  cache: "false"
+  homeUrl: "http://localhost:8080"
+  siteUrl: "http://localhost:8080"
+  
   # WordPress environment variables
   env:
-    WP_DEBUG: "false"
-    WP_DEBUG_LOG: "false"
-    WP_DEBUG_DISPLAY: "false"
-    WP_CACHE: "true"
     REDIS_HOST: "localhost"
     REDIS_PORT: "6379"
     REDIS_PASSWORD: ""
@@ -284,6 +289,8 @@ secrets:
     # wp-nonce-salt: your-nonce-salt
     # wp-admin-email: admin@example.com
     # wp-admin-password: your-admin-password
+    # wp-admin-username: admin
+    # wp-site-title: My WordPress Site
   
   # MySQL secrets
   mysql:

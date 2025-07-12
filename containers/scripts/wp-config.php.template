@@ -22,17 +22,14 @@ define('SECURE_AUTH_SALT', '${WP_SECURE_AUTH_SALT}');
 define('LOGGED_IN_SALT',   '${WP_LOGGED_IN_SALT}');
 define('NONCE_SALT',       '${WP_NONCE_SALT}');
 
-// WordPress settings
-define('WP_DEBUG', ${WP_DEBUG});
-define('WP_DEBUG_LOG', ${WP_DEBUG_LOG});
-define('WP_DEBUG_DISPLAY', ${WP_DEBUG_DISPLAY});
-define('WP_CACHE', ${WP_CACHE});
+// Database table prefix
+$table_prefix = 'wp_';
 
-// Redis configuration
-define('WP_REDIS_HOST', '${REDIS_HOST}');
-define('WP_REDIS_PORT', ${REDIS_PORT});
-define('WP_REDIS_PASSWORD', '${REDIS_PASSWORD}');
-define('WP_REDIS_DATABASE', ${REDIS_DATABASE});
+// WordPress settings
+define('WP_DEBUG', '${WP_DEBUG}');
+define('WP_DEBUG_LOG', '${WP_DEBUG_LOG}');
+define('WP_DEBUG_DISPLAY', '${WP_DEBUG_DISPLAY}');
+define('WP_CACHE', '${WP_CACHE}');
 
 // Security settings
 define('DISALLOW_FILE_EDIT', true);
