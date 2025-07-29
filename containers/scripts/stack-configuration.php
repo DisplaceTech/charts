@@ -48,8 +48,10 @@ add_action('admin_init', function() {
 }); 
 
 // Remove SQLite admin menu
-remove_action( 'admin_menu', 'sqlite_add_admin_menu' );
-remove_action( 'admin_bar_menu', 'sqlite_plugin_adminbar_item', 999 );
+add_action('admin_init', function() {
+    remove_submenu_page('options-general.php', 'sqlite-integration');
+    remove_action( 'admin_bar_menu', 'sqlite_plugin_adminbar_item', 999 );
+}, 999);
 
 // Set Modern Footnotes custom shortcode to "ref" via settings
 add_filter( 'option_modern_footnotes_settings', function($settings) {

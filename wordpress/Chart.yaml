@@ -3,14 +3,13 @@ name: wordpress
 description: A Helm chart for WordPress with Redis caching, automated backups, and immutable filesystem
 type: application
 version: 0.1.0
-appVersion: "6.8.1"
+appVersion: "6.8.2"
 keywords:
   - wordpress
   - cms
   - blog
   - php
   - mysql
-  - redis
 home: https://wordpress.org/
 sources:
   - https://github.com/WordPress/WordPress

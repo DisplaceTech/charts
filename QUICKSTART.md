@@ -233,7 +233,7 @@ make build-and-push-image
 # Upgrade deployment
 helm upgrade wordpress wordpress/ \
   --namespace wordpress \
-  --set wordpress.image.tag=6.8.1-8.4.10
+  --set wordpress.image.tag=6.8.2-8.4.10
 ```
 
 ### Update Helm Chart

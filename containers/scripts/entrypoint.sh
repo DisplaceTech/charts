@@ -4,7 +4,7 @@ set -e
 # Function to install WordPress using WP-CLI
 install_wordpress() {
     echo "Installing WordPress using WP-CLI..."
-    
+        
     # Get configuration from environment variables
     local site_title="${WP_SITE_TITLE:-My WordPress Site}"
     local admin_username="${WP_ADMIN_USERNAME:-admin}"
@@ -58,7 +58,7 @@ if [ -n "$WP_ADMIN_PASSWORD" ] && [ -n "$WP_ADMIN_EMAIL" ]; then
         echo "WordPress is already installed."
     else
         echo "WordPress is not installed. Starting installation..."
-        install_wordpress
+    install_wordpress
     fi
 fi
 

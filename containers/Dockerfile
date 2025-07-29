@@ -4,7 +4,7 @@
 FROM php:8.4.10-fpm-alpine
 
 # Set environment variables
-ENV WORDPRESS_VERSION=6.8.1
+ENV WORDPRESS_VERSION=6.8.2
 
 # Install system dependencies and PHP extensions
 RUN apk add --no-cache \
@@ -82,6 +82,13 @@ RUN mkdir -p /tmp/sqlite-plugin \
 
 # Copy SQLite db.php file for database integration
 RUN cp /var/www/html/wp-content/plugins/sqlite-database-integration/db.copy /var/www/html/wp-content/db.php
+
+# Download and configure the Wonder Cache plugin
+RUN mkdir -p /tmp/wonder-cache \
+    && curl -L -o wonder-cache.zip "https://downloads.wordpress.org/plugin/wonder-cache.latest-stable.zip" \
+    && unzip wonder-cache.zip -d /tmp/wonder-cache \
+    && cp /tmp/wonder-cache/wonder-cache/dropins/advanced-cache.php /var/www/html/wp-content/advanced-cache.php \
+    && rm -rf /tmp/wonder-cache wonder-cache.zip
 
 # Remove default WordPress plugins and themes
 RUN rm -rf /var/www/html/wp-content/plugins/akismet \

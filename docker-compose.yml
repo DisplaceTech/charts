@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   nginx:
     build:
@@ -51,9 +49,9 @@ services:
       
       # Site configuration
       - WP_SITE_TITLE="SQLite WP Test"
-      - WP_ADMIN_USERNAME=ericmann
-      - WP_ADMIN_PASSWORD=testtest
-      - WP_ADMIN_EMAIL=test@eamann.com
+      - WP_ADMIN_USERNAME=admin
+      - WP_ADMIN_PASSWORD=admin123
+      - WP_ADMIN_EMAIL=admin@example.com
     networks:
       - wordpress_network
 

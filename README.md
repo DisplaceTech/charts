@@ -208,7 +208,7 @@ security:
 ### Building Your Own Image
 
 The base image includes:
-- WordPress 6.8.1
+- WordPress 6.8.2
 - PHP 8.4.10
 - Apache with mod_rewrite
 - Redis Object Cache plugin

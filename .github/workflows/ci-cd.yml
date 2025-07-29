@@ -21,7 +21,7 @@ on:
 env:
   DOCKER_REGISTRY: ghcr.io
   IMAGE_NAME: wordpress
-  WORDPRESS_VERSION: 6.8.1
+  WORDPRESS_VERSION: 6.8.2
   PHP_VERSION: 8.4.10
   HELM_CHART_PATH: wordpress
   HELM_RELEASE_NAME: wordpress

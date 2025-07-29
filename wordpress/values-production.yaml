@@ -7,7 +7,7 @@ wordpress:
   
   image:
     repository: ghcr.io/displacetech/wordpress
-    tag: "6.8.1-8.4.10"  # Use specific version tag for production
+    tag: "6.8.2-8.4.10"  # Use specific version tag for production
     pullPolicy: Always
   
   service:
@@ -37,10 +37,6 @@ wordpress:
     WP_DEBUG_LOG: "false"
     WP_DEBUG_DISPLAY: "false"
     WP_CACHE: "true"
-    REDIS_HOST: "localhost"
-    REDIS_PORT: "6379"
-    REDIS_PASSWORD: ""
-    REDIS_DATABASE: "0"
   
   resources:
     requests:
@@ -67,62 +63,6 @@ wordpress:
       storageClass: "fast-ssd"
       accessMode: ReadWriteOnce
       mountPath: /var/www/html/wp-content/uploads
-
-# MySQL configuration
-mysql:
-  enabled: true
-  
-  image:
-    repository: mysql
-    tag: "8.0"
-    pullPolicy: IfNotPresent
-  
-  service:
-    type: ClusterIP
-    port: 3306
-    targetPort: 3306
-  
-  resources:
-    requests:
-      memory: "1Gi"
-      cpu: "500m"
-    limits:
-      memory: "2Gi"
-      cpu: "1000m"
-  
-  persistence:
-    enabled: true
-    size: 50Gi
-    storageClass: "fast-ssd"
-    accessMode: ReadWriteOnce
-    mountPath: /var/lib/mysql
-
-# Redis configuration
-redis:
-  enabled: true
-  
-  image:
-    repository: redis
-    tag: "7-alpine"
-    pullPolicy: IfNotPresent
-  
-  service:
-    type: ClusterIP
-    port: 6379
-    targetPort: 6379
-  
-  resources:
-    requests:
-      memory: "128Mi"
-      cpu: "100m"
-    limits:
-      memory: "256Mi"
-      cpu: "200m"
-  
-  config:
-    maxmemory: "200mb"
-    maxmemory-policy: "allkeys-lru"
-    save: "900 1 300 10 60 10000"
 
 # Backup configuration
 backups:

@@ -29,7 +29,6 @@ define('NONCE_SALT',       getenv('WP_NONCE_SALT') ?: 'your-unique-phrase-here')
 define('WP_DEBUG', getenv('WP_DEBUG') ?: 'false');
 define('WP_DEBUG_LOG', getenv('WP_DEBUG_LOG') ?: 'false');
 define('WP_DEBUG_DISPLAY', getenv('WP_DEBUG_DISPLAY') ?: 'false');
-define('WP_CACHE', getenv('WP_CACHE') ?: 'false');
 
 // Site configuration
 define('WP_HOME', getenv('WP_HOME') ?: 'http://localhost:8080');
@@ -44,6 +43,7 @@ define('WP_AUTO_UPDATE_CORE', false);
 // Performance settings
 define('WP_MEMORY_LIMIT', '256M');
 define('WP_MAX_MEMORY_LIMIT', '512M');
+define('WP_CACHE', true);
 
 // Multisite (disabled by default)
 // define('WP_ALLOW_MULTISITE', true);
